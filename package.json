@@ -1,0 +1,22 @@
+{
+  "name": "tegra",
+  "version": "1.0.0",
+  "description": "Tegra build tool for arch-based distributions.",
+  "main": "out/index.js",
+  "repository": "https://github.com/cmumme/tegra",
+  "author": "Camren Mumme <me@typechecked.dev>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "yarn build && node .",
+    "build": "yarn tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.3",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@types/diff": "^5.0.4",
+    "diff": "^4.0.2"
+  }
+}
