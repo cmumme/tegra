@@ -40,7 +40,7 @@ export class TegraBuilder {
      */
     public executeCommand(command: string, commandArgs: string[]) {
         this.buildFunctions.push(async () => {
-            await spawnCommand("arch-chroot", [".tegra/rootfs", `${command} ${commandArgs.join(" ")}`], true)
+            await spawnCommand("arch-chroot", [".tegra/rootfs", command, commandArgs.join(" ")], true)
         })
 
         return this
