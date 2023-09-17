@@ -1,10 +1,10 @@
 
 process.on("SIGINT", () => {
-    process.exit(2)
+    process.exit(1)
 })
 
 process.on("uncaughtException", () => {
-    process.exit(2)
+    process.exit(1)
 })
 
 export * from "./builder"
