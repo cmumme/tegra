@@ -1,19 +1,25 @@
 import { dirname, resolve } from "path"
 import { spawnCommand } from "../util/spawnCommand"
+import { exec, execSync } from "child_process"
 
 /**
  * A builder-style class used to generate an image with tegra.
  */
 export class TegraBuilder {
     protected readonly buildFunctions: (() => Promise<void>)[] = [ ]
-    protected readonly cleanupFunctions: (() => Promise<void>)[] = [ ]
-    private beforeExitCalled = false
+    protected readonly cleanupFunctions: (() => void)[] = [ ]
+    private cleanupEnabled = true
 
     public delibrateFail() {
         this.buildFunctions.push(async () => {
             await spawnCommand("exit", ["1"])
         })
 
+        return this
+    }
+
+    public noCleanup() {
+        this.cleanupEnabled = false
         return this
     }
 
@@ -38,9 +44,9 @@ export class TegraBuilder {
      * @param commandArgs The arguments to provide to the command
      * @returns this
      */
-    public executeCommand(command: string, commandArgs: string[]) {
+    public executeCommand(command: string) {
         this.buildFunctions.push(async () => {
-            await spawnCommand("arch-chroot", [".tegra/rootfs", command, commandArgs.join(" ")], true)
+            await spawnCommand("arch-chroot", [".tegra/rootfs", "bash", command], true)
         })
 
         return this
@@ -66,6 +72,15 @@ export class TegraBuilder {
         return this
     }
 
+    public generateFSTab() {
+        this.buildFunctions.push(async () => {
+            await spawnCommand("mkdir", ["-p", ".tegra/rootfs/etc"], true)
+            execSync("sudo sh -c \"genfstab -U .tegra/rootfs >> .tegra/rootfs/etc/fstab\"")
+        })
+
+        return this
+    }
+
     /**
      * Sets up the .tegra folder (where build fragments are stored)
      * 
@@ -79,6 +94,41 @@ export class TegraBuilder {
         return this
     }
 
+    public mountPartitions() {
+        this.buildFunctions.push(async () => {
+            await spawnCommand("mount", ["/dev/loop0p2", ".tegra/rootfs"], true)
+            await spawnCommand("mount", ["-m", "/dev/loop0p1", ".tegra/rootfs/boot"], true)
+        })
+
+        this.cleanupFunctions.push(() => {
+            exec("sudo umount .tegra/rootfs/boot")
+            exec("sudo umount .tegra/rootfs")
+            exec("sudo umount -l .tegra/rootfs")
+        })
+
+        return this
+    }
+
+    /**
+     * Creates the GPT partition table on the loopback device, partitions it with a boot and primary partition, and formats them
+     * 
+     * @returns this
+     */
+    public createPartitions() {
+        this.buildFunctions.push(async () => {
+            await spawnCommand("parted", ["-s", "/dev/loop0", "mktable", "GPT"], true)
+            await spawnCommand("parted", [
+                "-s", "-a", "optimal", "/dev/loop0", 
+                "mkpart", "Boot", "fat32", "0%", "128",
+                "mkpart", "Primary", "ext4", "128", "100%"
+            ], true)
+            await spawnCommand("mkfs.fat", ["-F", "32", "/dev/loop0p1"], true)
+            await spawnCommand("mkfs.ext4", ["/dev/loop0p2"], true)
+        })
+
+        return this
+    }
+
     /**
      * Creates the loopback device/image that we create and configure the new system on
      * 
@@ -86,15 +136,13 @@ export class TegraBuilder {
      */
     public createLoopbackDevice() {
         this.buildFunctions.push(async () => {
-            await spawnCommand("dd", ["if=/dev/zero", "of=.tegra/tegraLoopback.img", "bs=100M", "count=10"], true)
-            await spawnCommand("losetup", ["-fP", ".tegra/tegraLoopback.img"], true)
-            await spawnCommand("mkfs.ext4", [".tegra/tegraLoopback.img"], true)
-            await spawnCommand("mount", ["--mkdir", "-o", "loop", "/dev/loop0", ".tegra/rootfs"], true)
+            await spawnCommand("losetup", ["-D"], true)
+            await spawnCommand("dd", ["if=/dev/zero", "of=.tegra/tegraLoopback.img", "bs=100M", "count=20"], true)
+            await spawnCommand("losetup", ["-f", ".tegra/tegraLoopback.img"], true)
         })
 
-        this.cleanupFunctions.push(async () => {
-            await spawnCommand("umount", [".tegra/rootfs"], true)
-            await spawnCommand("losetup", ["-D"], true)
+        this.cleanupFunctions.push(() => {
+            exec("sudo losetup -D")
         })
 
         return this
@@ -107,5 +155,18 @@ export class TegraBuilder {
         for(let i = 0; i < this.buildFunctions.length; i++) {
             await this.buildFunctions[i]()
         }
+        process.exit(0)
+    }
+
+    public constructor() {
+        process.on("exit", async (ExitCode) => {
+            if(!this.cleanupEnabled) return
+
+            for(let i = 0; i < this.cleanupFunctions.length; i++) {
+                this.cleanupFunctions[i]()
+            }
+
+            process.exit(ExitCode)
+        })
     }
 }
