@@ -1,3 +1,4 @@
+import "./test"
 
 process.on("SIGINT", () => {
     process.exit(1)
