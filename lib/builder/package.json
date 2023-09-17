@@ -1,7 +1,7 @@
 {
-  "name": "tegra",
-  "version": "1.0.0",
-  "description": "Tegra build tool for arch-based distributions.",
+  "name": "@tegra/builder",
+  "version": "1.0.0-alpha1.0",
+  "description": "The underlying tool used in the Tegra distribution system for arch-based distributions.",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra",
   "author": "Camren Mumme <me@typechecked.dev>",
