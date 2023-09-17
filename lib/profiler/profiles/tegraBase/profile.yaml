@@ -1,0 +1,10 @@
+name: Tegra base profile
+description:
+  A base profile to inherit from that includes locale configuration, and the base system package.
+
+packages:
+  - base
+
+output:
+  rootFs: ext4
+  swapPartition: true

@@ -1,0 +1,16 @@
+name: Removable disk image profile
+description:
+  A profile for a bare minimum bootable disk image intended for flashing to a removable drive
+  (also includes nano, vi, and vim text editors for demonstration)
+inherits:
+  - tegraBase
+  - tegraLinux
+  - tegraRefind
+
+packages:
+  - nano
+  - vi
+  - vim
+output:
+  type: image
+  swapPartition: false

@@ -1,0 +1,12 @@
+name: Tegra rEFInd profile
+description:
+  A base profile that includes the rEFInd bootloader
+
+packages:
+  - refind
+patches:
+  patchFolders:
+    - ./patches
+output:
+  bootloader:
+    type: refind

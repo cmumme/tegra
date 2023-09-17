@@ -1,0 +1,11 @@
+name: Tegra Linux profile
+description:
+  A base profile to inherit from that uses the standard linux kernel
+
+packages:
+  - linux
+  - linux-firmware
+
+output:
+  bootloader:
+    kernelName: linux
