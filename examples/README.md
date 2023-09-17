@@ -1,3 +1,3 @@
 # Tegra distribution system examples
 ## Builder examples
-- [Bare-minimum removable drive](minimum-builder)
+- [Bare-minimum removable drive](builder/removable)
