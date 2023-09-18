@@ -4,7 +4,7 @@
   "description": "The Tegra distribution system",
   "repository": "https://github.com/cmumme/tegra.git",
   "author": "TypeChecked <me@typechecked.dev>",
-  "license": "GPLv3.0-or-greater",
+  "license": "GPL-3.0-only",
   "scripts": {
     "@comment": "sudo is required for the following command, as @tegra/builder requires superuser",
     "test": "sudo mocha -r ts-node/register 'lib/**/tests/**/*.spec.ts'"
