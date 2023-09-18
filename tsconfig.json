@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "moduleResolution": "NodeNext",
+        "module": "NodeNext",
+        "outDir": "out/"
+    },
+    "include": [
+        "./lib/**/tests/**/*.spec.ts"
+    ]
+}

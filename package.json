@@ -1,0 +1,22 @@
+{
+  "name": "tegra",
+  "version": "1.0.0",
+  "description": "The Tegra distribution system",
+  "repository": "https://github.com/cmumme/tegra.git",
+  "author": "TypeChecked <me@typechecked.dev>",
+  "license": "GPLv3.0-or-greater",
+  "scripts": {
+    "@comment": "sudo is required for the following command, as @tegra/builder requires superuser",
+    "test": "sudo mocha -r ts-node/register 'lib/**/tests/**/*.spec.ts'"
+  },
+  "private": false,
+  "devDependencies": {
+    "@types/chai": "^4.3.6",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.6.2",
+    "chai": "^4.3.8",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
