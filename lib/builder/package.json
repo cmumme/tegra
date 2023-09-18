@@ -14,10 +14,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
-    "@types/diff": "^5.0.4",
     "typescript": "^5.2.2"
   },
-  "dependencies": {
-    "diff": "^4.0.2"
-  }
+  "dependencies": {}
 }
