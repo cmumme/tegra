@@ -15,9 +15,11 @@ new TegraBuilder()
     // Creates the ./.tegra folder, not necessarily needed but it's best practice to implement this
     // just in case on of the following builder commands doesn't automatically generate it
     .createTegraFiles()
-    // Creates a loopback device and .img file (./.tegra/tegraLoopback.img), and sets it as the 
+    // Enables and sets the swap size to 1 GB
+    .enableSwap(1)
+    // Creates a .img file (./.tegra/tegraLoopback.img) and loopback device, and sets it as the 
     // target disk
-    .createLoopbackDevice()
+    .useImage(5)
     // Partitions and formats the target disk (in this case, the loopback device)
     .createPartitions()
     // Mounts the partitions to ``./.tegra/rootfs``
@@ -28,7 +30,8 @@ new TegraBuilder()
         "base", "linux", "linux-firmware", "refind", 
         "nano", "vi", "vim"
     ])
-    // Generates and writes the new system's FS table
+    // Generates and writes the new system's FS table with swap (if it's enabled), boot, and root 
+    // partitions
     .generateFSTab()
     // Sets the hostname to ``tegra``. (or whatever is in hostname.patch) The Tegra builder runs off 
     // of packages, commands, and patches. Patches are used to edit/create any file in the new system
