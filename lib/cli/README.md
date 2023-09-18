@@ -1,2 +1,2 @@
 # Tegra CLI
-A command line interface for ``@tegra/profiler`` to build Tegra images from a Tegra profile.
+A command line interface for ``@tegra-core/profiler`` to build Tegra images from a Tegra profile.

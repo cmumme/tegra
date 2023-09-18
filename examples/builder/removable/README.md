@@ -1,8 +1,8 @@
-# Bare-minimum low-level @tegra/builder example
+# Bare-minimum low-level @tegra-core/builder example
 The following code creates an bootable UEFI image (intended for flashing to a removable drive) with the rEFInd bootloader, some end-user packages, (``nano``, ``vi``, and ``vim``) and a root account with password ``tegra``. It yields a fully bootable .img, nearly identical to if you followed the [Arch Installation Guide](https://wiki.archlinux.org/title/Installation_guide) all the way through the end and installed the rEFInd bootloader. (does not contain a swap partition)
 
 ```ts
-import { TegraBuilder } from "@tegra/builder"
+import { TegraBuilder } from "@tegra-core/builder"
 
 // TegraBuilder is the base class that holds all logic you should need for customizing and generating
 // a new system. You use "builder commands" to describe how the system is generated and customized,
