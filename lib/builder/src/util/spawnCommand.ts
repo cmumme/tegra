@@ -1,16 +1,18 @@
 import { spawn } from 'child_process'
 
-export const spawnCommand = (command: string, commandArgs: string[], superuser = false) => {
+export const spawnCommand = (command: string, commandArgs: string[], superuser = false, quiet = false) => {
     return new Promise<string>((resolve, reject) => {
         const commandProcess = spawn(superuser ? "sudo" : command, superuser ? [ command, ...commandArgs ] : commandArgs);
         let totalData = ""
 
         commandProcess.stdout.on("data", (data: Buffer) => {
             totalData += data.toString()
+            if(quiet) return
             console.log(data.toString())
         })
         commandProcess.stderr.on("data", (data: Buffer) => {
             totalData += data.toString()
+            if(quiet) return
             console.log(data.toString())
         })
 

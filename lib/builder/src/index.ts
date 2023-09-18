@@ -1,6 +1,6 @@
 import { dirname, resolve } from "path"
 import { spawnCommand } from "./util/spawnCommand"
-import { exec, execSync } from "child_process"
+import { exec, execSync, spawn } from "child_process"
 import { constants, readFile, writeFile } from "fs/promises"
 
 // Constants
@@ -10,17 +10,34 @@ const UUID_REGEX = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-
  * A builder-style class used to generate an image with tegra.
  */
 export class TegraBuilder {
+    public targetDevice?: string
+    public bootPartitionDevice?: string
+    public swapPartitionDevice?: string
+    public rootPartitionDevice?: string
+    public swapEnabled = false
+    public swapSize = 0
+    public quiet = false
     protected readonly buildFunctions: (() => Promise<void>)[] = [ ]
     protected readonly cleanupFunctions: (() => void)[] = [ ]
     private cleanupEnabled = true
 
     private async spawnChrootCommand(command: string) {
-        return await spawnCommand("arch-chroot", [".tegra/rootfs", "bash", "-c", `${command}`], true)
+        return await this.spawnCommand("arch-chroot", [".tegra/rootfs", "bash", "-c", `${command}`], true)
+    }
+
+    private log(message: unknown, ...optionalParams: unknown[]) {
+        if(this.quiet) return
+
+        console.log(message, ...optionalParams)
+    }
+
+    private async spawnCommand(command: string, commandArgs: string[], superuser = false) {
+        return await spawnCommand(command, commandArgs, superuser, this.quiet)
     }
 
     public delibrateFail() {
         this.buildFunctions.push(async () => {
-            await spawnCommand("exit", ["1"])
+            await this.spawnCommand("exit", ["1"])
         })
 
         return this
@@ -33,12 +50,12 @@ export class TegraBuilder {
 
     public installGrub({ removable = false, bootloaderId = "TEGRA" }) {
         this.buildFunctions.push(async () => {
-            console.log(`Installing GRUB${removable ? " in removable mode" : ""} with ID "${bootloaderId}"...`)
+            this.log(`Installing GRUB${removable ? " in removable mode" : ""} with ID "${bootloaderId}"...`)
 
             await this.spawnChrootCommand(`grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id="${bootloaderId}" ${removable ? "--removable" : ""}`)
             await this.spawnChrootCommand("grub-mkconfig -o /boot/grub/grub.cfg")
 
-            console.log("Installed GRUB!")
+            this.log("Installed GRUB!")
         })
     }
 
@@ -50,15 +67,15 @@ export class TegraBuilder {
      */
     public installRefind({ useDefault = false, allDrivers = false }) {
         this.buildFunctions.push(async () => {
-            console.log("Installing rEFInd, do not be concerned if you get an ALERT.")
+            this.log("Installing rEFInd, do not be concerned if you get an ALERT.")
             await this.spawnChrootCommand(
-                `refind-install --yes ${useDefault ? "--usedefault /dev/loop0p1" : ""} ${allDrivers ? "--alldrivers" : ""}`
+                `refind-install --yes ${useDefault ? `--usedefault ${this.bootPartitionDevice}` : ""} ${allDrivers ? "--alldrivers" : ""}`
             ).catch(() => {
-                console.log("Failed to execute refind-install in chroot")
+                this.log("Failed to execute refind-install in chroot")
             })
 
             const refindLinuxConfPath = ".tegra/rootfs/boot/refind_linux.conf"
-            const lsblkOutput = await this.spawnChrootCommand("blkid | grep /dev/loop0p2")
+            const lsblkOutput = await this.spawnChrootCommand(`blkid | grep ${this.rootPartitionDevice}`)
             const rootUUID = lsblkOutput.match(UUID_REGEX)[1] // Index 1 is PARTUUID
             const currentRefindLinuxConf = await readFile(
                 refindLinuxConfPath, { encoding: "utf-8" }
@@ -70,29 +87,29 @@ export class TegraBuilder {
                 await writeFile(refindLinuxConfPath, fixedRefindLinuxConf, {
                     mode: constants.O_TRUNC
                 }).catch((err) => {
-                    console.log("Failed to write")
+                    this.log("Failed to write")
                     console.error(err)
                     process.exit(1)
                 }) 
             }
         
-            console.log("Successfully installed rEFInd.")
+            this.log("Successfully installed rEFInd.")
         })
 
         return this
     }
 
     /**
-     * Installs a list of packages to the new system via pacstrap with the -KM options
+     * Installs a list of packages to the new system via pacstrap with the -KMc options
      * 
      * @param packageList The list of packages to pacstrap
      * @returns this
      */
     public pacstrapPackages(packageList: string[]) {
         this.buildFunctions.push(async () => {
-            console.log(`Pacstrapping ${packageList.length} packages...`)
-            await spawnCommand("pacstrap", ["-KM", ".tegra/rootfs", ...packageList], true)
-            console.log(`Pacstrapped ${packageList.length} packages!`)
+            this.log(`Pacstrapping ${packageList.length} packages...`)
+            await this.spawnCommand("pacstrap", ["-KMc", ".tegra/rootfs", ...packageList], true)
+            this.log(`Pacstrapped ${packageList.length} packages!`)
         })
 
         return this
@@ -107,9 +124,9 @@ export class TegraBuilder {
      */
     public executeCommand(command: string) {
         this.buildFunctions.push(async () => {
-            console.log(`Executing ${command} in chroot...`)
+            this.log(`Executing ${command} in chroot...`)
             await this.spawnChrootCommand(command)
-            console.log(`Executed ${command} in chroot successfully!`)
+            this.log(`Executed ${command} in chroot successfully!`)
         })
 
         return this
@@ -124,14 +141,14 @@ export class TegraBuilder {
      */
     public applyPatch(patchPath: string, targetPath: string) {
         this.buildFunctions.push(async () => {
-            console.log(`Applying ${patchPath} to ${targetPath}...`)
+            this.log(`Applying ${patchPath} to ${targetPath}...`)
             const patchPathResolved = resolve(patchPath)
             const targetPathResolved = resolve(`.tegra/rootfs/${targetPath}`)
 
-            await spawnCommand("mkdir", ["-p", dirname(targetPathResolved)], true)
+            await this.spawnCommand("mkdir", ["-p", dirname(targetPathResolved)], true)
 
-            await spawnCommand("patch", [targetPathResolved, patchPathResolved], true)
-            console.log(`Applied ${patchPath} to ${targetPath}!`)
+            await this.spawnCommand("patch", [targetPathResolved, patchPathResolved], true)
+            this.log(`Applied ${patchPath} to ${targetPath}!`)
         })
 
         return this
@@ -139,10 +156,10 @@ export class TegraBuilder {
 
     public generateFSTab() {
         this.buildFunctions.push(async () => {
-            console.log("Generating FSTab...")
-            await spawnCommand("mkdir", ["-p", ".tegra/rootfs/etc"], true)
+            this.log("Generating FSTab...")
+            await this.spawnCommand("mkdir", ["-p", ".tegra/rootfs/etc"], true)
             execSync("sudo sh -c \"genfstab -U .tegra/rootfs >> .tegra/rootfs/etc/fstab\"")
-            console.log("Generated and wrote FSTab!")
+            this.log("Generated and wrote FSTab!")
         })
 
         return this
@@ -155,7 +172,9 @@ export class TegraBuilder {
      */
     public createTegraFiles() {
         this.buildFunctions.push(async () => {
-            await spawnCommand("mkdir", ["-p", ".tegra/rootfs"])
+            this.log("Creating .tegra build fragment folder...")
+            await this.spawnCommand("mkdir", ["-p", ".tegra/rootfs"])
+            this.log("Created .tegra build fragment folder...")
         })
 
         return this
@@ -163,60 +182,129 @@ export class TegraBuilder {
 
     public mountPartitions() {
         this.buildFunctions.push(async () => {
-            console.log("Mounting partitions...")
-            await spawnCommand("mount", ["/dev/loop0p2", ".tegra/rootfs"], true)
-            await spawnCommand("mount", ["-m", "/dev/loop0p1", ".tegra/rootfs/boot"], true)
-            console.log("Mounted partitions!")
+            this.log("Mounting partitions...")
+            await this.spawnCommand("mount", [this.rootPartitionDevice, ".tegra/rootfs"], true)
+            if(this.swapEnabled) {
+                await this.spawnCommand("swapon", [this.swapPartitionDevice])
+            }
+            await this.spawnCommand("mount", ["-m", this.bootPartitionDevice, ".tegra/rootfs/boot"], true)
+            this.log("Mounted partitions!")
         })
 
         this.cleanupFunctions.push(() => {
-            console.log("[CLEANUP] Unmounting partitions...")
+            this.log("[CLEANUP] Unmounting partitions...")
             exec("sudo umount .tegra/rootfs/boot")
             exec("sudo umount .tegra/rootfs")
             exec("sudo umount -l .tegra/rootfs")
+            if(!this.swapEnabled) return
+            this.log("[CLEANUP] Turning off swap partition...")
+    
+            exec(`swapoff ${this.swapPartitionDevice}`)
         })
 
         return this
     }
 
     /**
-     * Creates the GPT partition table on the loopback device, partitions it with a boot and primary partition, and formats them
+     * Creates the GPT partition table on the target disk, partitions it with a boot and primary partition, and formats them
      * 
      * @returns this
      */
-    public createPartitions(bootPartitionSizeMB = 128) {
+    public createPartitions(bootPartitionSize = 128) {
+        if(!this.bootPartitionDevice)
+            throw new Error(`No boot partition device has been assigned, ensure you have a useLoopbackDevice or useDisk build command.`)
+        if(!this.rootPartitionDevice)
+            throw new Error(`No boot partition device has been assigned, ensure you have a useLoopbackDevice or useDisk build command.`)
+
         this.buildFunctions.push(async () => {
-            console.log("Partitioning and formatting...")
-            await spawnCommand("parted", ["-s", "/dev/loop0", "mktable", "GPT"], true)
-            await spawnCommand("parted", [
-                "-s", "-a", "optimal", "/dev/loop0", 
-                "mkpart", "Boot", "fat32", "0%", `${bootPartitionSizeMB}`,
-                "mkpart", "Primary", "ext4", `${bootPartitionSizeMB}`, "100%"
-            ], true)
-            await spawnCommand("mkfs.fat", ["-F", "32", "/dev/loop0p1"], true)
-            await spawnCommand("mkfs.ext4", ["/dev/loop0p2"], true)
-            console.log("Partitioned and formatted successfully!")
+            this.log("Partitioning and formatting...")
+            await this.spawnCommand("parted", ["-s", this.targetDevice, "mktable", "GPT"], true)
+            if(this.swapEnabled) {
+                await this.spawnCommand("parted", [
+                    "-s", "-a", "optimal", this.targetDevice, 
+                    "mkpart", "Boot", "fat32", "0%", `${bootPartitionSize}`,
+                    // Swap partition will be formatted with mkswap later
+                    "mkpart", "Swap", "ext4", `${bootPartitionSize}`, `${bootPartitionSize+this.swapSize}`,
+                    "mkpart", "Primary", "ext4", `${bootPartitionSize+this.swapSize}`, "100%"
+                ], true)
+            } else {
+                await this.spawnCommand("parted", [
+                    "-s", "-a", "optimal", this.targetDevice, 
+                    "mkpart", "Boot", "fat32", "0%", `${bootPartitionSize}`,
+                    "mkpart", "Primary", "ext4", `${bootPartitionSize}`, "100%"
+                ], true)
+            }
+            await this.spawnCommand("mkfs.fat", ["-F", "32", this.bootPartitionDevice], true)
+            if(this.swapEnabled) {
+                await this.spawnCommand("mkswap", [this.swapPartitionDevice])
+            }
+            await this.spawnCommand("mkfs.ext4", [this.rootPartitionDevice], true)
+            this.log("Partitioned and formatted successfully!")
         })
 
         return this
     }
 
     /**
-     * Creates the loopback device/image that we create and configure the new system on
+     * Sets the target disk device to ``diskDevice`` and sets up the partition map
      * 
+     * @param diskDevice The disk device to use (e.g /dev/sdb)
      * @returns this
      */
-    public createLoopbackDevice() {
+    public useDisk(diskDevice: string) {
+        this.targetDevice = diskDevice
+        this.bootPartitionDevice = `${this.targetDevice}p1`
+        if(this.swapEnabled) {
+            this.swapPartitionDevice = `${this.targetDevice}p2`
+            this.rootPartitionDevice = `${this.targetDevice}p3`
+        } else {
+            this.rootPartitionDevice = `${this.targetDevice}p2`
+        }
+
+        return this
+    }
+
+    /**
+     * Enables the swap partition with size ``swapSize``
+     * 
+     * @param swapSize The swap size to use (in MB)
+     * @returns this
+     */
+    public enableSwap(swapSize = 2048) {
+        if(this.targetDevice) throw new Error("Partition map already setup, use the enableSwap command before calling the useLoopbackDevice or useDisk build commands.")
+        this.swapEnabled = true
+        this.swapSize = swapSize
+
+        return this
+    }
+
+    /**
+     * Creates an image and a corresponding loopback device and assigns it as the target disk
+     * 
+     * @param imageSize The total size of the full image in GB
+     * @returns this
+     */
+    public useImage(imageSize = 2) {
+        this.targetDevice = "/dev/loop0"
+        this.bootPartitionDevice = `${this.targetDevice}p1`
+
+        if(this.swapEnabled) {
+            this.swapPartitionDevice = `${this.targetDevice}p2`
+            this.rootPartitionDevice = `${this.targetDevice}p3`
+        } else {
+            this.rootPartitionDevice = `${this.targetDevice}p2`
+        }
+
         this.buildFunctions.push(async () => {
-            console.log("Setting up loopback device...")
-            await spawnCommand("losetup", ["-D"], true)
-            await spawnCommand("dd", ["if=/dev/zero", "of=.tegra/tegraLoopback.img", "bs=100M", "count=20"], true)
-            await spawnCommand("losetup", ["-f", ".tegra/tegraLoopback.img"], true)
-            console.log("Set up the loopback device!")
+            this.log("Setting up loopback device...")
+            await this.spawnCommand("losetup", ["-D"], true)
+            await this.spawnCommand("dd", ["if=/dev/zero", "of=.tegra/tegraBuild.img", "bs=100M", `count=${imageSize*10}`], true)
+            await this.spawnCommand("losetup", ["-f", ".tegra/tegraBuild.img"], true)
+            this.log("Set up the loopback device!")
         })
 
         this.cleanupFunctions.push(() => {
-            console.log("[CLEANUP] Detaching the loopback device...")
+            this.log("[CLEANUP] Detaching the loopback device...")
             exec("sudo losetup -D")
         })
 
@@ -227,21 +315,41 @@ export class TegraBuilder {
      * Runs the build process, finalizes all configurations, and generates the final image
      */
     public async build() {
-        console.log("Beginning build...")
         for(let i = 0; i < this.buildFunctions.length; i++) {
             await this.buildFunctions[i]()
         }
-        console.log("Built .tegra/tegraLoopback.img sucessfully!")
-        process.exit(0)
+        this.log("Built and wrote to the target disk sucessfully!")
+    }
+
+    /**
+     * Manually cleans up, unmounting partitions, disabling swap, etc
+     */
+    public cleanup() {
+        for(let i = 0; i < this.cleanupFunctions.length; i++) {
+            this.cleanupFunctions[i]()
+        }
+    }
+
+    /**
+     * Toggles output from this builder
+     * 
+     * @param quiet Whether or not the builder is quiet
+     * @returns this
+     */
+    public setQuiet(quiet: boolean) {
+        // We push to build functions to enable a build to be quiet in some sections and not quiet in others
+        this.buildFunctions.push(async () => {
+            this.quiet = quiet
+        })
+
+        return this
     }
 
     public constructor() {
         process.on("exit", async (ExitCode) => {
             if(!this.cleanupEnabled) return
 
-            for(let i = 0; i < this.cleanupFunctions.length; i++) {
-                this.cleanupFunctions[i]()
-            }
+            this.cleanup()
 
             process.exit(ExitCode)
         })
