@@ -1,5 +1,5 @@
 {
-  "name": "@tegra-core/builder",
+  "name": "@tgra/builder",
   "version": "1.0.0-alpha1.0",
   "description": "The underlying tool used in the Tegra distribution system for arch-based distributions.",
   "main": "out/index.js",

@@ -6,7 +6,7 @@
   "author": "TypeChecked <me@typechecked.dev>",
   "license": "GPL-3.0-only",
   "scripts": {
-    "@comment": "sudo is required for the following command, as @tegra-core/builder requires superuser",
+    "@comment": "sudo is required for the following command, as @tgra/builder requires superuser",
     "test": "sudo mocha -r ts-node/register 'lib/**/tests/**/*.spec.ts'"
   },
   "private": false,
