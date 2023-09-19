@@ -31,8 +31,8 @@ describe("Builder tests: build", function() {
             .installRefind({ useDefault: true, allDrivers: true })
 
         after(async () => {
-            //builder.cleanup()
-            //execSync("sudo rm -rf .tegra/")
+            builder.cleanup()
+            execSync("sudo rm -rf .tegra/")
         })
 
         await builder.build()
