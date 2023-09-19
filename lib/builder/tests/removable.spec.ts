@@ -3,8 +3,10 @@ import { TegraBuilder } from "../src"
 import { access } from "fs/promises"
 import { execSync } from "child_process"
 
-describe("Builder tests", () => {
-    it("Removable image full build test", async function() {
+describe("Builder tests: build", function() {
+    it("Removable image test", async function() {
+        if(!process.env.ENABLE_BUILD_TESTS) return this.skip()
+
         this.timeout(500*1000) // 300 seconds timeout for this build, typical is 100 seconds
 
         const builder = new TegraBuilder()

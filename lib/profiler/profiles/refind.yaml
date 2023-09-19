@@ -6,7 +6,7 @@ packages:
   - refind
 patches:
   patchFolders:
-    - ./patches
+    - ./refindPatches
 output:
   bootloader:
     type: refind
