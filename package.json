@@ -6,8 +6,9 @@
   "author": "TypeChecked <me@typechecked.dev>",
   "license": "GPL-3.0-only",
   "scripts": {
+    "test": "mocha -r ts-node/register 'lib/**/tests/**/*.spec.ts'",
     "@comment": "sudo is required for the following command, as @tgra/builder requires superuser",
-    "test": "sudo mocha -r ts-node/register 'lib/**/tests/**/*.spec.ts'"
+    "test:enableBuildTests": "sudo ENABLE_BUILD_TESTS=true yarn test"
   },
   "private": false,
   "devDependencies": {
