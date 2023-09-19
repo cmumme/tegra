@@ -1,0 +1,27 @@
+{
+  "name": "@tgra/cli",
+  "version": "1.0.0-alpha1.0",
+  "description": "A command line interface for ``@tgra/profiler`` to build Tegra images from a Tegra profile.",
+  "main": "out/index.js",
+  "repository": "https://github.com/cmumme/tegra",
+  "author": "Camren Mumme <me@typechecked.dev>",
+  "license": "GPL-3.0-only",
+  "private": false,
+  "scripts": {
+    "start": "yarn build && node .",
+    "build": "yarn tsc"
+  },
+  "bin": {
+    "tegra": "./out/index.js"
+  },
+  "dependencies": {
+    "@tgra/profiler": "^1.0.0-alpha1.3",
+    "chalk": "4.x",
+    "commander": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
