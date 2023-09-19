@@ -10,7 +10,7 @@
   "scripts": {
     "start": "yarn build && sudo node .",
     "build": "yarn tsc",
-    "prepublish": "yarn build"
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
