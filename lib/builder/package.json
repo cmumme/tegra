@@ -5,7 +5,7 @@
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra",
   "author": "Camren Mumme <me@typechecked.dev>",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "private": false,
   "scripts": {
     "start": "yarn build && sudo node .",
