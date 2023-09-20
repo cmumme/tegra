@@ -4,7 +4,13 @@ description:
 
 packages:
   - base
-
+patches:
+  patchFolders: 
+    - ./basePatches
+commands:
+  - ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+  - hwclock --systohc
+  - yes tegra | passwd root
 output:
   rootFs: ext4
   swapPartition: true

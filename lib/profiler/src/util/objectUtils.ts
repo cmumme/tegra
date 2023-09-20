@@ -29,10 +29,10 @@ export function mergeDeep(target: object, ...sources: object[]) {
             } else if(Array.isArray(sourceValue)) {
                 const targetArray: any[] = target[key] ?? []
                 // join arrays
-                Object.assign(target, { [key]: [ ...targetArray, ...sourceValue.filter((value) => {
+                Object.assign(target, { [key]: [ ...targetArray, ...sourceValue/*.filter((value) => {
                     // prevent duplicates
                     return targetArray.find(e => e === value) === undefined
-                }) ] })
+                })*/ ] })
             }
         }
     }

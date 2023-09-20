@@ -1,6 +1,6 @@
 {
   "name": "@tgra/profiler",
-  "version": "1.0.0-alpha1.3",
+  "version": "1.0.0-alpha1.19",
   "description": "A tool used to generate images from a Tegra profile using @tgra/builder under the hood.",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra.git",
@@ -12,6 +12,7 @@
     "build": "yarn tsc"
   },
   "dependencies": {
+    "@tgra/builder": "^1.0.0-alpha1.7",
     "yaml": "^2.3.2"
   },
   "devDependencies": {

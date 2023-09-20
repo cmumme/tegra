@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@tgra/builder@^1.0.0-alpha1.7":
+  version "1.0.0-alpha1.7"
+  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.0-alpha1.7.tgz#86871f9ff729987c59b5a3eaad6d27280cb2993c"
+  integrity sha512-BsJ64gH8/fIkuc7pjzs5uHIbLPZehKVgSQW4O5e/F8iajKF1/ma/IEce+oa9KscaEfBJAWeuFa7kzsnVCaAALQ==
+
 typescript@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"

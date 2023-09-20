@@ -14,6 +14,7 @@ export class TegraBuilder {
     public bootPartitionDevice?: string
     public swapPartitionDevice?: string
     public rootPartitionDevice?: string
+    public partPrefix: string = ""
     public swapEnabled = false
     public swapSize = 0
     public quiet = false
@@ -81,7 +82,6 @@ export class TegraBuilder {
                 refindLinuxConfPath, { encoding: "utf-8" }
             ).catch((err) => { })
             if(currentRefindLinuxConf) {
-                // Not sure what to do here.
                 const fixedRefindLinuxConf = currentRefindLinuxConf.replaceAll(UUID_REGEX, rootUUID)
 
                 await writeFile(refindLinuxConfPath, fixedRefindLinuxConf, {
@@ -91,6 +91,8 @@ export class TegraBuilder {
                     console.error(err)
                     process.exit(1)
                 }) 
+            } else {
+                throw new Error(`Could not access ${currentRefindLinuxConf}. Ensure that there is a patch with some dummy options (including a UUID! (does not have to be correct)) for /boot/refind_linux.conf`)
             }
         
             this.log("Successfully installed rEFInd.")
@@ -253,12 +255,12 @@ export class TegraBuilder {
      */
     public useDisk(diskDevice: string) {
         this.targetDevice = diskDevice
-        this.bootPartitionDevice = `${this.targetDevice}p1`
+        this.bootPartitionDevice = `${this.targetDevice}${this.partPrefix}1`
         if(this.swapEnabled) {
-            this.swapPartitionDevice = `${this.targetDevice}p2`
-            this.rootPartitionDevice = `${this.targetDevice}p3`
+            this.swapPartitionDevice = `${this.targetDevice}${this.partPrefix}2`
+            this.rootPartitionDevice = `${this.targetDevice}${this.partPrefix}3`
         } else {
-            this.rootPartitionDevice = `${this.targetDevice}p2`
+            this.rootPartitionDevice = `${this.targetDevice}${this.partPrefix}2`
         }
 
         return this
@@ -286,13 +288,14 @@ export class TegraBuilder {
      */
     public useImage(imageSize = 2) {
         this.targetDevice = "/dev/loop0"
-        this.bootPartitionDevice = `${this.targetDevice}p1`
+        this.partPrefix = "p"
+        this.bootPartitionDevice = `${this.targetDevice}${this.partPrefix}1`
 
         if(this.swapEnabled) {
-            this.swapPartitionDevice = `${this.targetDevice}p2`
-            this.rootPartitionDevice = `${this.targetDevice}p3`
+            this.swapPartitionDevice = `${this.targetDevice}${this.partPrefix}2`
+            this.rootPartitionDevice = `${this.targetDevice}${this.partPrefix}3`
         } else {
-            this.rootPartitionDevice = `${this.targetDevice}p2`
+            this.rootPartitionDevice = `${this.targetDevice}${this.partPrefix}2`
         }
 
         this.buildFunctions.push(async () => {
@@ -315,6 +318,8 @@ export class TegraBuilder {
      * Runs the build process, finalizes all configurations, and generates the final image
      */
     public async build() {
+        if((await this.spawnCommand("whoami", [])).trim() !== "root") throw new Error("The builder must be run with superuser permissions. Retry as root, or using sudo")
+
         for(let i = 0; i < this.buildFunctions.length; i++) {
             await this.buildFunctions[i]()
         }
@@ -334,9 +339,12 @@ export class TegraBuilder {
      * Toggles output from this builder
      * 
      * @param quiet Whether or not the builder is quiet
+     * @param sectioned Whether to make the entire build quiet, or just the commands up until quiet is disabled again (when)
      * @returns this
      */
-    public setQuiet(quiet: boolean) {
+    public setQuiet(quiet: boolean, sectioned = false) {
+        if(!sectioned) this.quiet = quiet
+
         // We push to build functions to enable a build to be quiet in some sections and not quiet in others
         this.buildFunctions.push(async () => {
             this.quiet = quiet
@@ -360,6 +368,7 @@ process.on("SIGINT", () => {
     process.exit(1)
 })
 
-process.on("uncaughtException", () => {
+process.on("uncaughtException", (err) => {
+    console.error(err)
     process.exit(1)
 })

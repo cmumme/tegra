@@ -16,12 +16,18 @@ export interface profileData {
     commands?: string[],
     output?: {
         type?: "image" | "disk",
+        imageSize?: number,
+        diskDevice?: string,
         swapPartition?: boolean,
         swapPartitionSize?: number,
         bootPartitionSize?: number,
         bootloader?: {
             type?: "refind",
-            kernelName?: string
+            kernelName?: string,
+            refindUseDefault?: boolean,
+            refindAllDrivers?: boolean,
+            grubRemovable?: boolean,
+            grubBootloaderId?: string
         }
     }
 }
