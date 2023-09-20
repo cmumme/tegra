@@ -1,6 +1,6 @@
 {
   "name": "@tgra/cli",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A command line interface for ``@tgra/profiler`` to build Tegra images from a Tegra profile.",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra",
@@ -10,13 +10,14 @@
   "scripts": {
     "@comment1": "Sudo is required for @tgra/builder functions",
     "start": "yarn build && sudo node .",
-    "build": "yarn tsc"
+    "build": "yarn tsc",
+    "prepublishOnly": "yarn build"
   },
   "bin": {
     "tegra": "./out/index.js"
   },
   "dependencies": {
-    "@tgra/profiler": "^1.0.0",
+    "@tgra/profiler": "^1.0.1",
     "chalk": "4.x",
     "commander": "^11.0.0",
     "ora": "5.x"

@@ -32,10 +32,10 @@
   resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.0.tgz#d5f399f14b6988b0d3557aec7a00be362420cd2c"
   integrity sha512-S1ko4P98aFaYyXXKCHmPuUwi01YrxO7QHfchZ1uOq6Pe9sFD1p3RUq8CVdnu4yN4o4Ckh885B7Nk27ro6SRquw==
 
-"@tgra/profiler@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@tgra/profiler/-/profiler-1.0.0.tgz#725d933d4ed5f95c16ce7d18300a540adae874b4"
-  integrity sha512-VW3qt4chyXf2eKoLIzGM1s1dDuBme3d/FpIOUlSMlS5NvOSgeEO9dZ6MxRecT/H4xiNlPhTONjAJkxnmL8NkYQ==
+"@tgra/profiler@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@tgra/profiler/-/profiler-1.0.1.tgz#7ddb5542b64fe06a389a2a8273d5a0fba0a9c4c8"
+  integrity sha512-/YS3ruDcmeNcsMpQVelAH3jELzRygGQa24mHLhlJXcdO/wAId3NX7Y3uYqMW2H+lCHqC67lmZO9fJwP24Dre8g==
   dependencies:
     "@tgra/builder" "^1.0.0"
     mini-signals "^2.0.0"

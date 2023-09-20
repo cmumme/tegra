@@ -13,7 +13,7 @@ program
     .action(async (profilePath, flags: { v: boolean }) => {
         const resolvedProfilePath = resolve(profilePath)
         const profileParser = new ProfileParser(resolvedProfilePath)
-        const profileCompositor = new ProfileCompositor(profileParser.profileData, !flags.v)
+        const profileCompositor = new ProfileCompositor(profileParser, !flags.v)
         const buildOutput = profileParser.profileData.output?.type === "disk" ?
             profileParser.profileData.output.diskDevice :
             ".tegra/tegraBuild.img"
