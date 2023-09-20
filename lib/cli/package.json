@@ -8,16 +8,18 @@
   "license": "GPL-3.0-only",
   "private": false,
   "scripts": {
-    "start": "yarn build && node .",
+    "@comment1": "Sudo is required for @tgra/builder functions",
+    "start": "yarn build && sudo node .",
     "build": "yarn tsc"
   },
   "bin": {
     "tegra": "./out/index.js"
   },
   "dependencies": {
-    "@tgra/profiler": "^1.0.0-alpha1.3",
+    "@tgra/profiler": "^1.0.0-alpha1.19",
     "chalk": "4.x",
-    "commander": "^11.0.0"
+    "commander": "^11.0.0",
+    "ora": "5.x"
   },
   "devDependencies": {
     "@types/node": "^20.6.2",
