@@ -1,6 +1,6 @@
 {
   "name": "@tgra/profiler",
-  "version": "1.0.0-alpha1.19",
+  "version": "1.0.0-alpha1.20",
   "description": "A tool used to generate images from a Tegra profile using @tgra/builder under the hood.",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra.git",
