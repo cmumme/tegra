@@ -16,7 +16,7 @@
     "tegra": "./out/index.js"
   },
   "dependencies": {
-    "@tgra/profiler": "^1.0.0-alpha1.19",
+    "@tgra/profiler": "^1.0.0-alpha1.20",
     "chalk": "4.x",
     "commander": "^11.0.0",
     "ora": "5.x"
