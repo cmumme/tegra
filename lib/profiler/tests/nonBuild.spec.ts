@@ -1,5 +1,5 @@
 import { expect } from "chai"
-import { ProfileParser } from "../src"
+import { ProfileCompositor, ProfileParser } from "../src"
 import { resolve } from "path"
 
 describe("Profiler tests: non-build", function() {
@@ -12,5 +12,16 @@ describe("Profiler tests: non-build", function() {
         expect(profile.profileData.output?.type, "Output type").to.equal("image")
         expect(profile.profileData.output?.bootloader?.type, "Bootloader type").to.equal("refind")
         expect(profile.profileData.patches?.patchFolders).to.have.all.members([ resolve(__dirname,"../profiles/refindPatches"), resolve(__dirname, "../profiles/basePatches") ])
+    })
+
+    it("Plugin loading test", async function() {
+        const profile = new ProfileParser("./assets/tests/profiler/nonBuild/inheritor/profile.yaml")
+        const compositor = new ProfileCompositor(profile, true)
+        compositor.init()
+        const testPlugin = compositor.plugins[0] as any
+
+        console.log(testPlugin)
+        expect(testPlugin?.isMyTestPlugin, "correct plugin loaded").to.equal("Hello, world! I am!")
+        expect(testPlugin?.ranAfterBootloaderInstall, "afterBootloaderInstall hook").to.equal(true)
     })
 })

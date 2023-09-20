@@ -1,0 +1,13 @@
+{
+  "name": "test-plugin",
+  "version": "1.0.0",
+  "main": "out/index.js",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "build": "yarn tsc"
+  },
+  "devDependencies": {
+    "@tgra/profiler": "^1.0.0-alpha1.21",
+    "typescript": "^5.2.2"
+  }
+}

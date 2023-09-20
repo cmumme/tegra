@@ -18,3 +18,5 @@ output:
   bootloader:
     refindUseDefault: true
     refindAllDrivers: true
+plugins:
+  - ../testPlugin
