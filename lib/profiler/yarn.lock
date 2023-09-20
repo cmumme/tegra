@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@tgra/builder@^1.0.0-alpha2.0":
-  version "1.0.0-alpha2.0"
-  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.0-alpha2.0.tgz#42d7937c4e1d4c5ad6718b554bb00bc83b1c6511"
-  integrity sha512-Qz6eN30wCKEWX03QDogffJxvgTY3BY8ROvjvsAhibdIsAyrQap+Uivc6Q4jX4TkR1Hc3taY9bdAZpIMps8QvtQ==
+"@tgra/builder@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.0.tgz#d5f399f14b6988b0d3557aec7a00be362420cd2c"
+  integrity sha512-S1ko4P98aFaYyXXKCHmPuUwi01YrxO7QHfchZ1uOq6Pe9sFD1p3RUq8CVdnu4yN4o4Ckh885B7Nk27ro6SRquw==
 
 mini-signals@^2.0.0:
   version "2.0.0"

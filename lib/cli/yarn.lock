@@ -27,17 +27,18 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@tgra/builder@^1.0.0-alpha2.0":
-  version "1.0.0-alpha2.0"
-  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.0-alpha2.0.tgz#42d7937c4e1d4c5ad6718b554bb00bc83b1c6511"
-  integrity sha512-Qz6eN30wCKEWX03QDogffJxvgTY3BY8ROvjvsAhibdIsAyrQap+Uivc6Q4jX4TkR1Hc3taY9bdAZpIMps8QvtQ==
+"@tgra/builder@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.0.tgz#d5f399f14b6988b0d3557aec7a00be362420cd2c"
+  integrity sha512-S1ko4P98aFaYyXXKCHmPuUwi01YrxO7QHfchZ1uOq6Pe9sFD1p3RUq8CVdnu4yN4o4Ckh885B7Nk27ro6SRquw==
 
-"@tgra/profiler@^1.0.0-alpha1.20":
-  version "1.0.0-alpha1.20"
-  resolved "https://registry.yarnpkg.com/@tgra/profiler/-/profiler-1.0.0-alpha1.20.tgz#8d867e21214a79473dbf85701bbe187d13d07b11"
-  integrity sha512-jV+PSOAfSBrj6i0PaY+UUmGfOduvr/HkH77MPu8OmNyY3mIiOqbc4j0PRrSGr9vVIcAKO2T9R0qgWUetga1Jgg==
+"@tgra/profiler@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tgra/profiler/-/profiler-1.0.0.tgz#725d933d4ed5f95c16ce7d18300a540adae874b4"
+  integrity sha512-VW3qt4chyXf2eKoLIzGM1s1dDuBme3d/FpIOUlSMlS5NvOSgeEO9dZ6MxRecT/H4xiNlPhTONjAJkxnmL8NkYQ==
   dependencies:
-    "@tgra/builder" "^1.0.0-alpha2.0"
+    "@tgra/builder" "^1.0.0"
+    mini-signals "^2.0.0"
     yaml "^2.3.2"
 
 "@tsconfig/node10@^1.0.7":
@@ -215,6 +216,11 @@ mimic-fn@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"
   integrity sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
+
+mini-signals@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/mini-signals/-/mini-signals-2.0.0.tgz#60a495a9f61c7a2f711fb40984831007cfd82b4b"
+  integrity sha512-z6A0ngjFIweQFa7wcupVzNtrrMMTZx1xa4NhCB68zVDPufIeHRSawLFifWgW/U/EYILLPMjumRiVvclrYGt23A==
 
 onetime@^5.1.0:
   version "5.1.2"
