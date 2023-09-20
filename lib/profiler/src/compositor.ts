@@ -44,7 +44,6 @@ export class ProfileCompositor {
 
         Object.values(this.profileData.plugins).map(pluginName => {
             const pluginConstructor = require(resolve(this.profilerParser.rootProfilePath, pluginName))
-            console.log(pluginConstructor)
             const pluginInstance = new pluginConstructor.default(this) as plugin
 
             this.plugins.push(pluginInstance)

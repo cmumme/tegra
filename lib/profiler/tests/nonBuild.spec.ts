@@ -20,7 +20,6 @@ describe("Profiler tests: non-build", function() {
         compositor.init()
         const testPlugin = compositor.plugins[0] as any
 
-        console.log(testPlugin)
         expect(testPlugin?.isMyTestPlugin, "correct plugin loaded").to.equal("Hello, world! I am!")
         expect(testPlugin?.ranAfterBootloaderInstall, "afterBootloaderInstall hook").to.equal(true)
     })

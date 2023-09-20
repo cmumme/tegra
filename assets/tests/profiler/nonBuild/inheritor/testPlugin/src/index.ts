@@ -9,7 +9,6 @@ export default class {
     ) {
         profileCompositor.afterBootloaderInstall.add(() => {
             this.ranAfterBootloaderInstall = true
-            console.log("Plugin successfully ran after bootloader install!")
         })
     }
 }
