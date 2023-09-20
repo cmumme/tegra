@@ -1,5 +1,5 @@
 import { expect } from "chai"
-import { TegraBuilder } from "../src"
+import { TegraBuilder, createPartitions, generateFSTab, installRefind, mountPartitions, useImage } from "../src"
 import { access } from "fs/promises"
 import { execSync } from "child_process"
 
@@ -14,21 +14,21 @@ describe("Builder tests: build", function() {
             .setQuiet(true)
             .createTegraFiles()
             .enableSwap(1)
-            .useImage(5)
-            .createPartitions()
-            .mountPartitions()
+            .add(useImage(5))
+            .add(createPartitions())
+            .add(mountPartitions())
             .pacstrapPackages([
                 "base", "linux", "linux-firmware", "refind", 
                 "nano", "vi", "vim"
             ])
-            .generateFSTab()
+            .add(generateFSTab())
             .applyPatch("./assets/tests/builder/removable/patches/etc/hostname.patch", "/etc/hostname")
             .applyPatch("./assets/tests/builder/removable/patches/etc/vconsole.conf.patch", "/etc/vconsole.conf")
             .applyPatch("./assets/tests/builder/removable/patches/boot/refind_linux.conf.patch", "/boot/refind_linux.conf")
             .executeCommand("ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime")
             .executeCommand("hwclock --systohc")
             .executeCommand("yes tegra | passwd root")
-            .installRefind({ useDefault: true, allDrivers: true })
+            .add(installRefind({ useDefault: true, allDrivers: true }))
 
         after(async () => {
             builder.cleanup()
