@@ -1,4 +1,7 @@
-import { TegraBuilder } from "@tgra/builder"
+import {
+    TegraBuilder, installGrub, installRefind, useDisk,
+    useImage, createPartitions, mountPartitions, generateFSTab
+} from "@tgra/builder"
 import { profileData } from "."
 import { readdir } from "fs/promises"
 import { readdirSync } from "fs"
@@ -35,13 +38,13 @@ export class ProfileCompositor {
         if(this.profileData.output?.type === "disk" && !this.profileData.output.diskDevice)
             throw new Error("Output type 'disk' was specified with no output disk device specified, please specify a disk device.")
         this.profileData.output?.type === "disk" ? 
-            this.builder.useDisk(this.profileData.output.diskDevice) :
-            this.builder.useImage(this.profileData.output?.imageSize)
+            this.builder.add(useDisk(this.profileData.output.diskDevice)) :
+            this.builder.add(useImage(this.profileData.output?.imageSize))
         this.builder
-            .createPartitions(this.profileData.output?.bootPartitionSize)
-            .mountPartitions()
+            .add(createPartitions(this.profileData.output?.bootPartitionSize))
+            .add(mountPartitions())
             .pacstrapPackages(this.profileData.packages ?? [ ])
-            .generateFSTab()
+            .add(generateFSTab())
 
         this.profileData.commands?.forEach((command) => {
             this.builder.executeCommand(command)
@@ -56,14 +59,14 @@ export class ProfileCompositor {
         })
 
         this.profileData.output?.bootloader?.type === "refind" ?
-            this.builder.installRefind({
+            this.builder.add(installRefind({
                 useDefault: this.profileData.output.bootloader.refindUseDefault ?? false,
                 allDrivers: this.profileData.output.bootloader.refindAllDrivers ?? false
-            }) :
-            this.builder.installGrub({
+            })) :
+            this.builder.add(installGrub({
                 removable: this.profileData.output.bootloader.grubRemovable ?? false,
                 bootloaderId: this.profileData.output.bootloader.grubBootloaderId ?? "TEGRA"
-            })
+            }))
 
         this.initialized = true
 
