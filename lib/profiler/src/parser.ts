@@ -29,11 +29,13 @@ export interface profileData {
             grubRemovable?: boolean,
             grubBootloaderId?: string
         }
-    }
+    },
+    plugins?: string[]
 }
 
 export class ProfileParser {
     public profileData: profileData = { }
+    public readonly rootProfilePath: string
     private readonly rootProfileData: profileData
     private readonly profilePath: string
 
@@ -96,6 +98,8 @@ export class ProfileParser {
             // no .yaml prefix required
             this.profilePath = tegraProfilePath
         }
+
+        this.rootProfilePath = relativeProfilePath
 
         if(!this.profilePath) 
             throw new Error(
