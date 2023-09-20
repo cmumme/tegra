@@ -13,4 +13,8 @@ packages:
   - vim
 output:
   type: image
+  imageSize: 5
   swapPartition: false
+  bootloader:
+    refindUseDefault: true
+    refindAllDrivers: true

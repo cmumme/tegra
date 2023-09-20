@@ -3,14 +3,19 @@ description:
   A profile for a bare minimum bootable disk image intended for flashing to a removable drive
   (also includes nano, vi, and vim text editors for demonstration)
 inherits:
-  - tegraBase
-  - tegraLinux
-  - tegraRefind
+  - base
+  - linux
+  - refind
 
 packages:
   - nano
   - vi
   - vim
 output:
-  type: image
+  type: disk
+  diskDevice: /dev/sda
+  imageSize: 5
   swapPartition: false
+  bootloader:
+    refindUseDefault: true
+    refindAllDrivers: true
