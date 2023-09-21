@@ -2,8 +2,8 @@ name: Tegra base profile
 description:
   A base profile to inherit from that includes locale configuration, and the base system package.
 
-packages:
-  - base
+# no base package needed, it is installed by the installBaseBeforeAll plugin
+# (allows us to chroot before packages are installed)
 patches:
   patchFolders: 
     - ./basePatches
@@ -14,3 +14,5 @@ commands:
 output:
   rootFs: ext4
   swapPartition: true
+plugins:
+  - ./plugins/installBaseBeforeAll.js

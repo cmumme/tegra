@@ -1,6 +1,6 @@
 {
   "name": "@tgra/cli",
-  "version": "1.0.3",
+  "version": "1.1.8",
   "description": "A command line interface for ``@tgra/profiler`` to build Tegra images from a Tegra profile.",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra",
@@ -17,7 +17,7 @@
     "tegra": "./out/index.js"
   },
   "dependencies": {
-    "@tgra/profiler": "^1.0.1",
+    "@tgra/profiler": "^1.0.9",
     "chalk": "4.x",
     "commander": "^11.0.0",
     "ora": "5.x"

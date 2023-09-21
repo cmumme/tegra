@@ -3,8 +3,8 @@ import {
     useImage, createPartitions, mountPartitions, generateFSTab
 } from "@tgra/builder"
 import { ProfileParser, profileData } from "."
-import { readdir } from "fs/promises"
-import { readdirSync } from "fs"
+import { readdir, stat } from "fs/promises"
+import { readdirSync, statSync } from "fs"
 import { extname, relative, resolve } from "path"
 import { MiniSignal } from "mini-signals"
 
@@ -14,6 +14,7 @@ export interface plugin {
 
 export class ProfileCompositor {
     public beforeDiskSetup = new MiniSignal()
+    public afterDiskSetup = new MiniSignal()
     public beforePackageInstall = new MiniSignal()
     public beforeCommandExecution = new MiniSignal()
     public beforePatch = new MiniSignal()
@@ -79,6 +80,7 @@ export class ProfileCompositor {
             .add(createPartitions(this.profileData.output?.bootPartitionSize))
             .add(mountPartitions())
         
+        this.afterDiskSetup.dispatch()
         this.beforePackageInstall.dispatch()
         
         this.builder
@@ -93,9 +95,9 @@ export class ProfileCompositor {
         this.beforePatch.dispatch()
         this.profileData.patches.patchFolders.forEach((patchFolderPath) => {
             readdirSync(patchFolderPath, { recursive: true, encoding: "utf-8" }).forEach((patchPath: string) => {
-                if(!(extname(patchPath) === ".patch")) return 
+                if(statSync(resolve(patchFolderPath, patchPath)).isDirectory()) return 
 
-                this.builder.applyPatch(resolve(patchFolderPath, patchPath), resolve("/",patchPath.slice(0, -".patch".length)))
+                this.builder.applyPatch(resolve(patchFolderPath, patchPath), resolve("/",patchPath))
             })
         })
 

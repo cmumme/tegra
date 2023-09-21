@@ -1,5 +1,7 @@
 import { dirname, resolve } from "path"
 import { spawnCommand } from "./util/spawnCommand"
+import { constants, copyFile, readFile, writeFile } from "fs/promises"
+import { dumpLog } from "."
 
 export * from "./buildCommands"
 
@@ -18,19 +20,25 @@ export class TegraBuilder {
     public readonly buildFunctions: (() => Promise<void>)[] = [ ]
     public readonly cleanupFunctions: (() => void)[] = [ ]
     public cleanupEnabled = true
+    public fullLog: string = ""
 
     public async spawnChrootCommand(command: string) {
         return await this.spawnCommand("arch-chroot", [".tegra/rootfs", "bash", "-c", `${command}`], true)
     }
 
     public log(message: unknown, ...optionalParams: unknown[]) {
+        this.fullLog += `${message}\n`
         if(this.quiet) return
 
         console.log(message, ...optionalParams)
     }
 
     public async spawnCommand(command: string, commandArgs: string[], superuser = false) {
-        return await spawnCommand(command, commandArgs, superuser, this.quiet)
+        const commandOutput = await spawnCommand(command, commandArgs, superuser, this.quiet)
+
+        this.fullLog += commandOutput
+
+        return commandOutput
     }
 
     public noCleanup() {
@@ -83,9 +91,9 @@ export class TegraBuilder {
     }
 
     /**
-     * Applies a patch to a file (or creates a new file if needed) on the new system
+     * Creates/overwrites a file on the new system
      * 
-     * @param patchPath The path to the .patch or .diff file
+     * @param patchPath The path to the file
      * @param targetPath The path to the file to apply the patch to, relative to the new system's root
      * @returns this
      */
@@ -97,7 +105,7 @@ export class TegraBuilder {
 
             await this.spawnCommand("mkdir", ["-p", dirname(targetPathResolved)], true)
 
-            await this.spawnCommand("patch", [targetPathResolved, patchPathResolved], true)
+            await copyFile(patchPathResolved,targetPathResolved)
             this.log(`Applied ${patchPath} to ${targetPath}!`)
         })
 
@@ -149,6 +157,8 @@ export class TegraBuilder {
      * Manually cleans up, unmounting partitions, disabling swap, etc
      */
     public cleanup() {
+        this.add(dumpLog())
+
         for(let i = 0; i < this.cleanupFunctions.length; i++) {
             this.cleanupFunctions[i]()
         }

@@ -11,7 +11,7 @@ describe("Builder tests: build", function() {
 
         const builder = new TegraBuilder()
             .noCleanup() // Cleanup is done manually in the after() hook
-            .setQuiet(true)
+            .setQuiet(process.env.LOUD_BUILD_TESTS !== "true")
             .createTegraFiles()
             .enableSwap(1)
             .add(useImage(5))
@@ -22,9 +22,9 @@ describe("Builder tests: build", function() {
                 "nano", "vi", "vim"
             ])
             .add(generateFSTab())
-            .applyPatch("./assets/tests/builder/removable/patches/etc/hostname.patch", "/etc/hostname")
-            .applyPatch("./assets/tests/builder/removable/patches/etc/vconsole.conf.patch", "/etc/vconsole.conf")
-            .applyPatch("./assets/tests/builder/removable/patches/boot/refind_linux.conf.patch", "/boot/refind_linux.conf")
+            .applyPatch("./assets/tests/builder/removable/patches/etc/hostname", "/etc/hostname")
+            .applyPatch("./assets/tests/builder/removable/patches/etc/vconsole.conf", "/etc/vconsole.conf")
+            .applyPatch("./assets/tests/builder/removable/patches/boot/refind_linux.conf", "/boot/refind_linux.conf")
             .executeCommand("ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime")
             .executeCommand("hwclock --systohc")
             .executeCommand("yes tegra | passwd root")

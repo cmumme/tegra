@@ -51,13 +51,19 @@ export class ProfileParser {
         this.profileData = lastProfileData
     }
 
-    private resolvePaths() {
-        if(!this.rootProfileData.patches?.patchFolders) return
-        if(this.rootProfileData.patches.patchFolders.length === 0) return
-
-        this.rootProfileData.patches.patchFolders = this.rootProfileData.patches.patchFolders.map((relativePatchFolderPath) => {
+    private resolvePathsIn(array: string[]) {
+        return array.map((relativePatchFolderPath) => {
             return resolve(dirname(this.profilePath), relativePatchFolderPath)
         })
+    }
+
+    private resolvePaths() {
+        if(this.rootProfileData.patches?.patchFolders) {
+            this.rootProfileData.patches.patchFolders = this.resolvePathsIn(this.rootProfileData.patches.patchFolders)
+        }
+        if(this.rootProfileData.plugins) {
+            this.rootProfileData.plugins = this.resolvePathsIn(this.rootProfileData.plugins)
+        }
     }
 
     private parseProfile(yamlSource: string) {

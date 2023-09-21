@@ -19,4 +19,4 @@ output:
     refindUseDefault: true
     refindAllDrivers: true
 plugins:
-  - ../testPlugin
+  - ./testPlugin

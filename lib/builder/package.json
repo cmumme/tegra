@@ -1,6 +1,6 @@
 {
   "name": "@tgra/builder",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "The underlying tool used in the Tegra distribution system for arch-based distributions.",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra",
