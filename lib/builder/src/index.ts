@@ -144,8 +144,8 @@ export class TegraBuilder {
     /**
      * Runs the build process, finalizes all configurations, and generates the final image
      */
-    public async build() {
-        if((await this.spawnCommand("whoami", [])).trim() !== "root") throw new Error("The builder must be run with superuser permissions. Retry as root, or using sudo")
+    public async build(requireRoot = true) {
+        if(requireRoot && (await this.spawnCommand("whoami", [], false)).trim() !== "root") throw new Error("The builder must be run with superuser permissions. Retry as root, or using sudo")
 
         for(let i = 0; i < this.buildFunctions.length; i++) {
             await this.buildFunctions[i]()
