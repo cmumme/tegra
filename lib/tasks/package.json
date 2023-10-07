@@ -1,6 +1,6 @@
 {
   "name": "@tgra/tasks",
-  "version": "1.0.0-alpha1.2",
+  "version": "1.0.0-alpha1.6",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra.git",
   "author": "Camren Mumme <me@typechecked.dev>",
@@ -14,5 +14,8 @@
   "devDependencies": {
     "@tgra/builder": "^1.0.4",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@tgra/tasksys": "^1.0.0-alpha1.6"
   }
 }

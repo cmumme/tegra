@@ -31,8 +31,10 @@ describe("TaskSys tests: non-build", function() {
             builder
         )
 
-        sequence.getTask("testTask").taskOptions = {
-            value: uuid
+        ;(sequence.getTask("testImport").taskOptions as any).taskOptions = {
+            testTask: {
+                value: uuid
+            }
         }
 
         sequence.execute()

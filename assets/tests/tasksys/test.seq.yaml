@@ -1,9 +1,12 @@
 name: TaskSys test
 tasks:
-  - use: ./tasks/testTask.js
-    id: testTask
+  - use: "@tgra/tasks/importSequence"
+    id: testImport
     with:
-      value: uninitialized # Will be initialized in the test script
+      sequenceFile: "./other.seq.yaml"
+      taskOptions:
+        testTask:
+          value: uninitialized with value from test.seq.yaml # Will be initialized in the test script
   - use: "@tgra/tasks/example"
     id: exampleTask
     with:

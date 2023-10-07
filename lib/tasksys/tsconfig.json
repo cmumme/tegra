@@ -4,8 +4,7 @@
         "moduleResolution": "NodeNext",
         "module": "NodeNext",
         "outDir": "out/",
-        "declaration": true,
-        "emitDeclarationOnly": true
+        "declaration": true
     },
     "include": [
         "./src/**/*.ts"

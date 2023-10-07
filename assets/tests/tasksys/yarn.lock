@@ -2,7 +2,27 @@
 # yarn lockfile v1
 
 
-"@tgra/tasks@^1.0.0-alpha1.2":
-  version "1.0.0-alpha1.2"
-  resolved "https://registry.yarnpkg.com/@tgra/tasks/-/tasks-1.0.0-alpha1.2.tgz#3119d897999df957a52e44cd4b5174a375dff976"
-  integrity sha512-VawxQEdU+EGPaEIVGB1dF2pGxL6fIHnJuc0VoPHomGJGUqQI7iPsq901QJnRyQedsr5gC6IQYkCu6jc1eGuRaw==
+"@tgra/builder@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.4.tgz#c6d13d0807f21abc65441c0ed8ffc32222d67300"
+  integrity sha512-+XjtY9DzHBoVtYDYCOjD5MV//W9qOjYuSvqbpzvQhOnCSEauWIeGbDTDkMc7ju5tJ/xbtmmbCE9uHU96gFCxew==
+
+"@tgra/tasks@^1.0.0-alpha1.6":
+  version "1.0.0-alpha1.6"
+  resolved "https://registry.yarnpkg.com/@tgra/tasks/-/tasks-1.0.0-alpha1.6.tgz#74afbc420cc9283f269ecac6cd72404cf7924626"
+  integrity sha512-xUzTUjwEL+pD/LV3/zShREimba7HRKcmxNlhcENZR8QHZujrUMwLFruMW66U0fwxKQm5uX0YSFQOy1aRKgVBMg==
+  dependencies:
+    "@tgra/tasksys" "^1.0.0-alpha1.6"
+
+"@tgra/tasksys@^1.0.0-alpha1.6":
+  version "1.0.0-alpha1.6"
+  resolved "https://registry.yarnpkg.com/@tgra/tasksys/-/tasksys-1.0.0-alpha1.6.tgz#29ff0c87c07f0cb2ac6c407946ebe40403434c51"
+  integrity sha512-j7WY2hSv/ViB4TzwzuWQe9C30tPGrpQXo5XKkZAnfexNNPUcKsMGIzfLI57iHWEsSzYdNwXKF94HCWBX661vEw==
+  dependencies:
+    "@tgra/builder" "^1.0.4"
+    yaml "^2.3.2"
+
+yaml@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.3.2.tgz#f522db4313c671a0ca963a75670f1c12ea909144"
+  integrity sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg==

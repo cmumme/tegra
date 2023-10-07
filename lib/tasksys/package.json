@@ -1,6 +1,6 @@
 {
   "name": "@tgra/tasksys",
-  "version": "1.0.0-alpha1.3",
+  "version": "1.0.0-alpha1.6",
   "main": "out/index.js",
   "repository": "https://github.com/cmumme/tegra.git",
   "author": "Camren Mumme <me@typechecked.dev>",

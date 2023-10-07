@@ -1,0 +1,6 @@
+name: TaskSys inherited sequence test (@tgra/tasks/importSequence)
+tasks:
+  - use: ./tasks/testTask.js
+    id: testTask
+    with:
+      value: uninitialized with value from other.seq.yaml # Will be initialized in the test script
