@@ -14,7 +14,11 @@ export type TaskFunction<T extends object = object> = (
      * The options passed to this task, as found in the ``with``
      * property of a ``TaskConfig``.
      */
-    options: T
+    options: T,
+    /**
+     * The ``Task`` class that this ``TaskFunction`` was called from.
+     */
+    task: Task
 ) => void
 
 /**
@@ -92,7 +96,8 @@ export class Task<T extends object = object> {
             builder,
             taskFunction,
             config.with,
-            config.id
+            config.id,
+            rootDir
         )
     }
 
@@ -100,7 +105,8 @@ export class Task<T extends object = object> {
         public readonly builder: TegraBuilder,
         public readonly taskFunction: TaskFunction,
         public taskOptions: T,
-        public readonly taskId?: string
+        public readonly taskId?: string,
+        public readonly rootDir = "."
     ) { }
 
     /**
@@ -111,7 +117,8 @@ export class Task<T extends object = object> {
     public execute() {
         return this.taskFunction(
             this.builder,
-            this.taskOptions
+            this.taskOptions,
+            this
         )
     }
 }
