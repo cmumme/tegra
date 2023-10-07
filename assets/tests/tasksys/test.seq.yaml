@@ -1,0 +1,10 @@
+name: TaskSys test
+tasks:
+  - use: ./tasks/testTask.js
+    id: testTask
+    with:
+      value: uninitialized # Will be initialized in the test script
+  - use: "@tgra/tasks/example"
+    id: exampleTask
+    with:
+      append: everything
