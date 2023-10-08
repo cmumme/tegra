@@ -15,6 +15,7 @@ export class TegraBuilder {
     public rootPartitionDevice?: string
     public partPrefix: string = ""
     public swapEnabled = false
+    public buildFragmentFolderCreated = false
     public swapSize = 0
     public quiet = false
     public readonly buildFunctions: (() => Promise<void>)[] = [ ]
@@ -118,6 +119,7 @@ export class TegraBuilder {
      * @returns this
      */
     public createTegraFiles() {
+        this.buildFragmentFolderCreated = true
         this.buildFunctions.push(async () => {
             this.log("Creating .tegra build fragment folder...")
             await this.spawnCommand("mkdir", ["-p", ".tegra/rootfs"])
@@ -157,7 +159,7 @@ export class TegraBuilder {
      * Manually cleans up, unmounting partitions, disabling swap, etc
      */
     public cleanup() {
-        this.add(dumpLog())
+        this.buildFragmentFolderCreated && this.add(dumpLog())
 
         for(let i = 0; i < this.cleanupFunctions.length; i++) {
             this.cleanupFunctions[i]()
