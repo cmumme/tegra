@@ -8,7 +8,9 @@
   "scripts": {
     "test": "mocha -r ts-node/register 'lib/**/tests/**/*.spec.ts'",
     "@comment": "sudo is required for the following command, as @tgra/builder requires superuser",
-    "test:enableBuildTests": "sudo ENABLE_BUILD_TESTS=true yarn test"
+    "test:enableBuildTests:noroot": "ENABLE_BUILD_TESTS=true  yarn test",
+    "test:enableBuildTests:loud": "sudo LOUD_BUILD_TESTS=true yarn test:enableBuildTests:noroot",
+    "test:enableBuildTests": "sudo yarn test:enableBuildTests:noroot"
   },
   "private": false,
   "devDependencies": {
