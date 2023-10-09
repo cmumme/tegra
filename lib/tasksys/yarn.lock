@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@tgra/builder@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.4.tgz#c6d13d0807f21abc65441c0ed8ffc32222d67300"
-  integrity sha512-+XjtY9DzHBoVtYDYCOjD5MV//W9qOjYuSvqbpzvQhOnCSEauWIeGbDTDkMc7ju5tJ/xbtmmbCE9uHU96gFCxew==
+"@tgra/builder@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.5.tgz#4fc4cd5e2bca23c1ec0ed79989d27c542d74ee69"
+  integrity sha512-iHlihNoBO7gSSZDXE9NWWgJB7Ak/RflQvdb682i6fkEwyyXcZUVBhkj0S1/boB9IodP7CJuyjmvygB5UgWtSjA==
 
 typescript@^5.2.2:
   version "5.2.2"
