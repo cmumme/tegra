@@ -7,7 +7,6 @@ program
     .description("CLI for interacting with the Tegra profiler")
     .version(require("../package.json").version)
 
-import "./commands/build"
-import "./commands/parse"
+import "./commands"
 
 program.parse()

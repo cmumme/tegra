@@ -1,12 +1,12 @@
 import { program } from "commander"
 import { resolve } from "path"
 import { ProfileParser, ProfileCompositor } from "@tgra/profiler"
-import { log } from "../utils/log"
+import { log } from "../../utils/log"
 import ora from "ora"
 import chalk from "chalk"
 
 program
-    .command("build")
+    .command("profile:build")
     .description("Builds a profile")
     .argument("<profile-path>", "the path to the profile to build")
     .option("-v", "--verbose")

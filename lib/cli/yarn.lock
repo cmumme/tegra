@@ -32,6 +32,11 @@
   resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.3.tgz#87d08eccc18cdbfeabfe13906a7b3ed32f6c7db8"
   integrity sha512-lSw4OPnArMonTmGdCYQgVZiTLt28lihnNzpJcrUKXqSn66b3h+MVHyMa0paAw+jcKAnwKLIP7dKvgpbZg/hTPw==
 
+"@tgra/builder@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@tgra/builder/-/builder-1.0.5.tgz#4fc4cd5e2bca23c1ec0ed79989d27c542d74ee69"
+  integrity sha512-iHlihNoBO7gSSZDXE9NWWgJB7Ak/RflQvdb682i6fkEwyyXcZUVBhkj0S1/boB9IodP7CJuyjmvygB5UgWtSjA==
+
 "@tgra/profiler@^1.0.9":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@tgra/profiler/-/profiler-1.0.9.tgz#f7896b64c2981705519d836e867574abd88ace0b"
@@ -39,6 +44,14 @@
   dependencies:
     "@tgra/builder" "^1.0.3"
     mini-signals "^2.0.0"
+    yaml "^2.3.2"
+
+"@tgra/tasksys@^1.0.0-alpha1.7":
+  version "1.0.0-alpha1.7"
+  resolved "https://registry.yarnpkg.com/@tgra/tasksys/-/tasksys-1.0.0-alpha1.7.tgz#4f474e1efe67a0c04ffd97dea916c3723debc1c3"
+  integrity sha512-O4tHoL/IwhX941+XHo7ZWsZ7TStHj3ftbOT40IgKsI/Oh2GzWhE0egeq3MFepbgO6jNjzl1tpBFG+9PpYgymdA==
+  dependencies:
+    "@tgra/builder" "^1.0.5"
     yaml "^2.3.2"
 
 "@tsconfig/node10@^1.0.7":
